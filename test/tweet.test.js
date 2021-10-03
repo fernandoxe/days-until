@@ -9,6 +9,7 @@ const {
   textDaysSum13,
   textDayMonthSum13,
   extraText,
+  text13th,
 } = require('../src/tweet');
 
 describe('Tweet test', () => {
@@ -135,7 +136,7 @@ describe('Tweet test', () => {
 
     const extra1 = extraText(113, date1);
     const extra2 = extraText(234, date2);
-    const extra3 = extraText(10, date3);console.log(extra3);
+    const extra3 = extraText(10, date3);
     const extra4 = extraText(49, date4);
     const extra5 = extraText(120, date5);
 
@@ -144,5 +145,26 @@ describe('Tweet test', () => {
     expect(extra3).to.satisfy(string => string.startsWith('\nToday is 12/01... 12 + 01 = 13'));
     expect(extra4).to.satisfy(string => string.startsWith('\n49... 4 + 9 = 13'));
     expect(extra5).to.be.equal('');
+  });
+
+  it('should return a not empty string when the day is 13 and month is not 12', () => {
+    const date1 = new Date(2021, 10 - 1, 13);
+    const date2 = new Date(2022, 8 - 1, 13);
+
+    const date3 = new Date(2021, 4 - 1, 5);
+    const date4 = new Date(2021, 12 - 1, 17);
+    const date5 = new Date(2021, 12 - 1, 13);
+
+    const text1 = text13th(date1);
+    const text2 = text13th(date2);
+    const text3 = text13th(date3);
+    const text4 = text13th(date4);
+    const text5 = text13th(date5);
+
+    expect(text1).to.satisfy(string => string.startsWith('\nHappy 13th'));
+    expect(text2).to.satisfy(string => string.startsWith('\nHappy 13th'));
+    expect(text3).to.be.equal('');
+    expect(text4).to.be.equal('');
+    expect(text5).to.be.equal('');
   });
 });
