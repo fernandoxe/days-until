@@ -57,7 +57,7 @@ const toDigits = (number) => {
 };
 
 const sumDigits = (number) => {
-  const digits = toDigits(number);console.log('sum', digits, digits.reduce((a, b) => a + b, 0));
+  const digits = toDigits(number);
   return digits.reduce((a, b) => a + b, 0);
 };
 
@@ -126,11 +126,15 @@ const extraText = (days, date) => {
   return '';
 };
 
+const text13th = (date) => {
+  return (date.getMonth() + 1 !== 12) && date.getDate() === 13 ? '\nHappy 13th!': '';
+};
+
 const post = async (data, Twit) => {
   const { name, month, day } = data;
 
-  // const today = new Date(new Date().setHours(0, 0, 0, 0));
-  const today = new Date(new Date(2021,2,19).setHours(0, 0, 0, 0));console.log(today);
+  const today = new Date(new Date().setHours(0, 0, 0, 0));
+  // const today = new Date(new Date(2021,2,19).setHours(0, 0, 0, 0));
 
   let birthday = new Date(today.getFullYear(), month - 1, day);
   if(birthday < today) {
@@ -141,20 +145,31 @@ const post = async (data, Twit) => {
 
   let tweet = '';
   if(days === 0) {
-    tweet = `Today is ${name}\'s birthday`;
+    tweet = `Today is ${name}\'s birthday! #HappyBirthday${name}`;
   } else {
-    tweet = `${days} day${days !== 1 ? 's' : ''} until ${name}\'s birthday ${extraText(days, today)}`;
+    tweet = `${days} day${days !== 1 ? 's' : ''} until ${name}\'s birthday${extraText(days, today)}${text13th(today)}`;
   }
 
-  for (let i = 1; i < 366; i++) {
-    const d = new Date(new Date().setHours(0, 0, 0, 0));
-    d.setDate(d.getDate() + i);
-    // console.log((d.getMonth() + 1) + '/' + d.getDate());
-  }
+  // for (let i = 1; i < 366; i++) {
+  //   const d = new Date(new Date().setHours(0, 0, 0, 0));
+  //   d.setDate(d.getDate() + i);
+  //   if(birthday < d) {
+  //     birthday.setFullYear(birthday.getFullYear() + 1);
+  //   }
+  //   const daysU = daysUntil(d, birthday);
+  //   console.log(
+  //     (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear(),
+  //     `[${daysU}]`,
+  //     `[${textDayMonthSum13(d).substr(1, 11)}]`,
+  //     `[${textDateSum13(d).substr(1, 11)}]`,
+  //     `[${textDaysSum13(daysU).substr(1, 11)}]`,
+  //     `[${text13th(d).substr(1, 11)}]`,
+  //   );
+  // }
 
-  // const tweetResult = await Twit.post('statuses/update', { status: tweet });
-  // return `Post ok: ${tweetResult.data.text}`;
-  return `<div>Result: ${tweet}</div><div>today: ${today}</div><div>birthday: ${birthday}</div>`;
+  const tweetResult = await Twit.post('statuses/update', { status: tweet });
+  return `Post ok: ${tweetResult.data.text}`;
+  // return `<div>Result: ${tweet}</div><div>today: ${today}</div><div>birthday: ${birthday}</div>`;
 };
 
 module.exports = {
@@ -167,4 +182,5 @@ module.exports = {
   textDaysSum13,
   textDayMonthSum13,
   extraText,
+  text13th,
 };
