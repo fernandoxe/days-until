@@ -10,6 +10,10 @@ const {
   textDayMonthSum13,
   extraText,
   text13th,
+  textBirthday,
+  textDaysUntil,
+  getToday,
+  getNextBirthday,
 } = require('../src/tweet');
 
 describe('Tweet test', () => {
@@ -166,5 +170,39 @@ describe('Tweet test', () => {
     expect(text3).to.be.equal('');
     expect(text4).to.be.equal('');
     expect(text5).to.be.equal('');
+  });
+
+  it('should return a not empty string when the days is 0', () => {
+    const name = 'Taylor';
+    const text1 = textBirthday(1, name);
+    const text2 = textBirthday(13, name);
+    const text3 = textBirthday(0, name);
+
+    expect(text1).to.be.equal('');
+    expect(text2).to.be.equal('');
+    expect(text3).to.satisfy(string => string.startsWith('Today is Taylor\'s birthday!'));
+  });
+
+  it('should return a string with the days until', () => {
+    const name = 'Taylor';
+    const text1 = textDaysUntil(245, name);
+    const text2 = textDaysUntil(1, name);
+
+    expect(text1).to.satisfy(string => string.startsWith('245 days until Taylor\'s'));
+    expect(text2).to.satisfy(string => string.startsWith('1 day until Taylor\'s'));
+  });
+
+  it('should return the target date of this year, or next year if the target date already passed', () => {
+    const today1 = new Date(new Date(2021, 4, 13).setHours(0, 0, 0, 0));
+    const today2 = new Date(new Date(2021, 11, 19).setHours(0, 0, 0, 0));
+
+    const month = 12;
+    const day = 13;
+
+    const date1 = getNextBirthday(today1, month, day);
+    const date2 = getNextBirthday(today2, month, day);
+
+    expect(date1.toDateString()).to.be.equal('Mon Dec 13 2021');
+    expect(date2.toDateString()).to.be.equal('Tue Dec 13 2022');
   });
 });
