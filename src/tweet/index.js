@@ -130,24 +130,43 @@ const text13th = (date) => {
   return (date.getMonth() + 1 !== 12) && date.getDate() === 13 ? '\nHappy 13th!': '';
 };
 
-const post = async (data, Twit) => {
-  const { name, month, day } = data;
+const textBirthday = (days, name) => {
+  return days === 0 ? `Today is ${name}\'s birthday!` : '';
+};
 
-  const today = new Date(new Date().setHours(0, 0, 0, 0));
-  // const today = new Date(new Date(2021,2,19).setHours(0, 0, 0, 0));
+const textDaysUntil = (days, name) => {
+  return `${days} day${days !== 1 ? 's' : ''} until ${name}\'s birthday`;
+};
 
+const getToday = () => {
+  return new Date(new Date().setHours(0, 0, 0, 0));
+};
+
+const getNextBirthday = (today, month, day) => {
   let birthday = new Date(today.getFullYear(), month - 1, day);
   if(birthday < today) {
     birthday.setFullYear(birthday.getFullYear() + 1);
   }
+  return birthday;
+};
+
+const post = async (data, Twit) => {
+  const { name, month, day } = data;
+
+  const today = getToday();
+
+  const birthday = getNextBirthday(today, month, day);
 
   const days = daysUntil(today, birthday);
 
+  const textBday = textBirthday(days, name);
+
   let tweet = '';
-  if(days === 0) {
-    tweet = `Today is ${name}\'s birthday! #HappyBirthday${name}`;
+
+  if(textBday) {
+    tweet = textBday;
   } else {
-    tweet = `${days} day${days !== 1 ? 's' : ''} until ${name}\'s birthday${extraText(days, today)}${text13th(today)}`;
+    tweet = `${textDaysUntil(days, name)}${extraText(days, today)}${text13th(today)}`;
   }
 
   // for (let i = 1; i < 366; i++) {
@@ -183,4 +202,8 @@ module.exports = {
   textDayMonthSum13,
   extraText,
   text13th,
+  textBirthday,
+  textDaysUntil,
+  getToday,
+  getNextBirthday,
 };
