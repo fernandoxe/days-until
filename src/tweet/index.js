@@ -191,8 +191,17 @@ const post = async (data, Twit) => {
   // return `<div>Result: ${tweet}</div><div>today: ${today}</div><div>birthday: ${birthday}</div>`;
 };
 
+const replyTo = (id, reply, Twit) => {
+  const tweetResult = await Twit.post('statuses/update', {
+    in_reply_to_status_id: id,
+    status: reply,
+  });
+  return `Post ok: ${tweetResult.data.text}`;
+};
+
 module.exports = {
   post,
+  replyTo,
   daysUntil,
   textEndsWith13,
   toDigits,
