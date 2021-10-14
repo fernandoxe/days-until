@@ -191,17 +191,29 @@ const post = async (data, Twit) => {
   // return `<div>Result: ${tweet}</div><div>today: ${today}</div><div>birthday: ${birthday}</div>`;
 };
 
-const replyTo = (id, reply, Twit) => {
+const replyTo = async (id, reply, Twit) => {
+  const tweet = reply.replace(/\\n/g, '\n');
   const tweetResult = await Twit.post('statuses/update', {
     in_reply_to_status_id: id,
-    status: reply,
+    status: tweet,
   });
   return `Post ok: ${tweetResult.data.text}`;
+  // return `<div>Id: ${id}</div><div>reply: ${reply}</div>`;
+};
+
+const customTweet = async (tweet, Twit) => {
+  const tw = tweet.replace(/\\n/g, '\n');
+  const tweetResult = await Twit.post('statuses/update', {
+    status: tw,
+  });
+  return `Post ok: ${tweetResult.data.text}`;
+  // return `<div>Id: ${id}</div><div>reply: ${reply}</div>`;
 };
 
 module.exports = {
   post,
   replyTo,
+  customTweet,
   daysUntil,
   textEndsWith13,
   toDigits,
